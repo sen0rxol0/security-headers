@@ -123,7 +123,7 @@ class SecurityHeadersBuilder {
      *
      * @return array
      */
-    protected function hpkp()
+    protected function hpkp(): array
     {
         if (!$this->config['hpkp']['enabled']) {
             return '';
@@ -138,18 +138,18 @@ class SecurityHeadersBuilder {
             ];
         }
 
-
-        // $header = ($reportOnly && !empty($reportUri))
-        // ? 'Public-Key-Pins-Report-Only: '
-        // : 'Public-Key-Pins: ';
+        $policyName = (
+            $this->config['hpkp']['report-only'] 
+            && !is_null($this->config['hpkp']['report-uri'])
+        ) ? 'Public-Key-Pins-Report-Only: ' : 'Public-Key-Pins: ';
 
         $hpkp = new HPKPBuilder($this->config['hpkp']);
 
-        // return [
-        //     'Strict-Transport-Security' => $hsts,
-        // ];
+        $explodedPolicy = explode(':', $hpkp->getHeader(), 1);
 
-        return $hpkp->getHeader();
+        return [
+           $policyName => $explodedPolicy[1]
+        ];
     }
 
     /**

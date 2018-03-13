@@ -28,11 +28,11 @@ final class SecurityHeadersBuilderTest extends TestCase {
     unset($obj);
   }
   
-  public function testHeadersOutput(): void 
-  {
-    $sh = $this->getBuilder();
+  // public function testHeadersOutput(): void 
+  // {
+  //   $sh = $this->getBuilder();
 
-    // $this->assertTrue($var->method1("hey") == 'Hello World');
-    unset($sh);
-  }
+  //   // $this->assertTrue($var->method1("hey") == 'Hello World');
+  //   unset($sh);
+  // }
 }
