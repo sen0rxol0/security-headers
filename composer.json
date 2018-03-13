@@ -1,0 +1,40 @@
+{
+    "name": "sen0rxol0/security-headers",
+    "description": "Small package that serves as a middleware to inject HTTP response headers for improved security",
+    "keywords": ["laravel", "security", "headers", "package"],
+    "homepage": "https://github.com/sen0rxol0/security-headers",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sen0rxol0",
+            "email": "sen0rxol0@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": "^7.1",
+        "paragonie/csp-builder": "^2.3",
+        "illuminate/support": "^5.6",
+        "paragonie/hpkp-builder": "^0.1.0"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "6.5.*"
+    },
+	"autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "Sen0rxol0\\SecurityHeaders\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sen0rxol0\\SecurityHeaders\\SecurityHeadersServiceProvider"
+            ]
+        }
+    }
+}
