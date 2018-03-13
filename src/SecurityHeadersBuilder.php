@@ -145,7 +145,7 @@ class SecurityHeadersBuilder {
 
         $hpkp = new HPKPBuilder($this->config['hpkp']);
 
-        $explodedPolicy = explode(':', $hpkp->getHeader(), 1);
+        $explodedPolicy = explode(':', $hpkp->getHeader(), 2);
 
         return [
            $policyName => $explodedPolicy[1]
