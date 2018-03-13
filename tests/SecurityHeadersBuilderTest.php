@@ -11,19 +11,28 @@ final class SecurityHeadersBuilderTest extends TestCase {
    */
   protected $configPath = __DIR__ . '/../config/security-headers.php';
 
-  public function testNoSyntaxError() : void
+  protected function getBuilder(): SecurityHeadersBuilder
   {
     $config = require $this->configPath;
 
-    $obj = new SecurityHeadersBuilder($config);
+    $sh = new SecurityHeadersBuilder($config);
+
+    return $sh;
+  }
+
+  public function testNoSyntaxError() : void
+  {
+    $obj = $this->getBuilder();
+
     $this->assertTrue(is_object($obj));
     unset($obj);
   }
   
-  // public function testMethod1(){
-  //   $var = new Buonzz\Template\YourClass;
-  //   $this->assertTrue($var->method1("hey") == 'Hello World');
-  //   unset($var);
-  // }
-  
+  public function testHeadersOutput(): void 
+  {
+    $sh = $this->getBuilder();
+
+    // $this->assertTrue($var->method1("hey") == 'Hello World');
+    unset($sh);
+  }
 }
