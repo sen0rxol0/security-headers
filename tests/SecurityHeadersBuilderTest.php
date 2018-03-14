@@ -38,6 +38,10 @@ final class SecurityHeadersBuilderTest extends TestCase {
     return $sh;
   }
 
+  /**
+   * @covers 
+   */
+
   public function testNoSyntaxError(): void
   {
     $sh = $this->getBuilder();
@@ -96,6 +100,13 @@ final class SecurityHeadersBuilderTest extends TestCase {
 
     $this->assertContains('preload', $headers['Strict-Transport-Security']);
     $this->assertContains('includeSubDomains', $headers['Strict-Transport-Security']);
+
+    $policy = "max-age=31536000; includeSubDomains; preload";
+
+    $this->assertArraySubset([
+      'Strict-Transport-Security' => $policy
+    ], $headers);
+
     unset($config);
     unset($headers);
   }
@@ -185,6 +196,16 @@ final class SecurityHeadersBuilderTest extends TestCase {
     unset($headers);
   }
 
+  public function testCsp(): void 
+  {
+    $headers = $this->getBuilder()->headers();
+
+    $this->assertArrayHasKey('Content-Security-Policy', $headers);
+    $this->assertTrue(is_string($headers['Content-Security-Policy']));
+
+    unset($headers);
+  }
+
   public function testCspWithStrcsp(): void
   {
     $config = $this->getConfig();
@@ -195,16 +216,6 @@ final class SecurityHeadersBuilderTest extends TestCase {
     $this->assertTrue($headers['Content-Security-Policy'] === $config['str-csp']);
 
     unset($config);
-    unset($headers);
-  }
-
-  public function testCspWithoutStrcsp(): void
-  {
-    $headers = $this->getBuilder()->headers();
-
-    $this->assertArrayHasKey('Content-Security-Policy', $headers);
-    $this->assertTrue(is_string($headers['Content-Security-Policy']));
-
     unset($headers);
   }
 }

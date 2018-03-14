@@ -37,8 +37,8 @@ class SecurityHeadersBuilder {
     }
 
     /**
-     * Merges policies then stores it in the protected $policies property.
-     * Retuns policies
+     * Merges headers then stores it in the protected $policies property.
+     * Retuns headers
      *
      * @return array
      */
@@ -70,14 +70,14 @@ class SecurityHeadersBuilder {
     {
         $enabled = $this->config['hsts']['enabled'];
         $preload = $this->config['hsts']['preload'];
-        $maxAge = $this->config['hsts']['max-age'];
+        $maxAge = $this->config['hsts']['max-age'] ?? 31536000;
         $includeSubs = $this->config['hsts']['include-subdomains'];
 
         if (!$enabled) {
             return [];
         }
 
-        $policy = " max-age={$maxAge}";
+        $policy = "max-age={$maxAge}";
 
         if ($includeSubs) {
             $policy .= '; includeSubDomains';
