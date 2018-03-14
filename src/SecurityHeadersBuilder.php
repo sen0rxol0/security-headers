@@ -126,10 +126,17 @@ class SecurityHeadersBuilder {
     protected function hpkp(): array
     {
         if (!$this->config['hpkp']['enabled']) {
-            return '';
+            return [];
         }
 
-        if (empty($this->config['hpkp']['hashes'])) {
+        $policy = ' ';
+        $hashes = $this->config['hpkp']['hashes'] ?? [];        
+        $maxAge = $this->config['hpkp']['max-age'] ?? 5184000;
+        $includeSubs = $this->config['hpkp']['include-subdomains'] ?? false;
+        $reportOnly = $this->config['hpkp']['report-only'] ?? false;
+        $reportUri = $this->config['hpkp']['report-uri'] ?? null;
+
+        if (empty($hashes)) {
             $hash = $this->hash();
 
             $this->config['hpkp']['hashes'][] =  [
@@ -138,17 +145,28 @@ class SecurityHeadersBuilder {
             ];
         }
 
-        $policyName = (
-            $this->config['hpkp']['report-only'] 
-            && !is_null($this->config['hpkp']['report-uri'])
-        ) ? 'Public-Key-Pins-Report-Only: ' : 'Public-Key-Pins: ';
+        foreach ($this->config['hpkp']['hashes'] as $h) {
+            $policy .= 'pin-' . $h['algo'] . '=';
+            $policy .= \json_encode($h['hash']);
+            $policy .= '; ';
+        }
 
-        $hpkp = new HPKPBuilder($this->config['hpkp']);
+        $policy .= 'max-age=' . $maxAge;
 
-        $explodedPolicy = explode(':', $hpkp->getHeader(), 2);
+        if ($includeSubs) {
+            $policy .= '; includeSubDomains';
+        }
+
+        if ($reportUri) {
+            $policy .= '; report-uri="' . $reportUri . '"';
+        }
+        
+        $policyName = ($reportOnly && !empty($reportUri))
+            ? 'Public-Key-Pins-Report-Only: '
+            : 'Public-Key-Pins: ';
 
         return [
-           $policyName => $explodedPolicy[1]
+           $policyName => $policy
         ];
     }
 

@@ -4,7 +4,6 @@ namespace Sen0roxol0\SecurityHeaders;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 
 /**
