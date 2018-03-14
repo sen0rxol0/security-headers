@@ -71,7 +71,7 @@ class SecurityHeadersBuilder {
         $enabled = $this->config['hsts']['enabled'];
         $preload = $this->config['hsts']['preload'];
         $maxAge = $this->config['hsts']['max-age'];
-        $includeSubs = $this->config['hsts']['include-sub-domains'];
+        $includeSubs = $this->config['hsts']['include-subdomains'];
 
         if (!$enabled) {
             return [];
@@ -100,8 +100,8 @@ class SecurityHeadersBuilder {
     protected function ect(): array
     {
         $enabled = $this->config['ect']['enabled'];
-        $maxAge = $this->config['ect']['max-age'];
-        $enforce = $this->config['ect']['enforce'];
+        $maxAge = $this->config['ect']['max-age'] ?? 0;
+        $enforce = $this->config['ect']['enforce'] ?? false;
         $reportUri = $this->config['ect']['report-uri'];
 
         if (!$enabled) {
@@ -115,7 +115,7 @@ class SecurityHeadersBuilder {
         }
 
         if (!empty($reportUri)) {
-            $policy .= '; report-uri=' . strval($reportUri);
+            $policy .= '; report-uri="' . $reportUri . '"';
         }
 
         return [
@@ -157,8 +157,8 @@ class SecurityHeadersBuilder {
      */
     protected function hpkp(): array
     {
-        $policy = ' ';
-        $hashes = $this->config['hpkp']['hashes'] ?? [];        
+        $policy = '';
+        $hashes = $this->config['hpkp']['hashes'];        
         $maxAge = $this->config['hpkp']['max-age'] ?? 5184000;
         $includeSubs = $this->config['hpkp']['include-subdomains'] ?? false;
         $reportOnly = $this->config['hpkp']['report-only'] ?? false;
@@ -172,9 +172,9 @@ class SecurityHeadersBuilder {
             $policy .= 'pin-' . $h['algo'] . '=';
 
             if (base64_encode(base64_decode($h['hash'], true)) === $h['hash']){
-                $policy .= strval($h['hash']);
+                $policy .= json_encode($h['hash']);
             } else {
-                $policy .= strval(base64_encode($h['hash']));
+                $policy .= json_encode(base64_encode($h['hash']));
             }
 
             $policy .= '; ';

@@ -33,7 +33,7 @@ return [
      *
      * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#xxxsp
      *
-     * Possible values: '1', '0', '1; mode=block', '1; report=http://example.com/report_URI'
+     * Possible values: '1', '0', '1; mode=block', '1; report="http://example.com/report_URI"'
      */
     'x-xss-protection' => '1; mode=block',
 
@@ -58,7 +58,7 @@ return [
         'enabled' => false,
         'preload' => false,
         'max-age' => 31536000,
-        'include-sub-domains' => true
+        'include-subdomains' => true
     ],
 
     /**
@@ -94,7 +94,7 @@ return [
             //     'hash' => 'base64-encoded hash',
             // ],
         ],
-        'include-sub-domains' => false,
+        'include-subdomains' => false,
         'max-age' => 5184000,
         'report-only' => false,
         'report-uri' => null

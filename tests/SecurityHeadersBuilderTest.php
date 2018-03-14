@@ -80,9 +80,131 @@ final class SecurityHeadersBuilderTest extends TestCase {
       $headers = $this->getBuilder($config)->headers();
       
       $this->assertArrayNotHasKey('Expect-CT', $headers);
-      $this->assertArrayNotHasKey('Strict-Transport-Security', $headers);      
+      $this->assertArrayNotHasKey('Strict-Transport-Security', $headers);   
 
       unset($config);
       unset($headers);
+  }
+
+  public function testHsts(): void
+  {
+    $config = $this->getConfig();
+    $config['hsts']['enabled'] = true;
+    $config['hsts']['preload'] = true;
+
+    $headers = $this->getBuilder($config)->headers();
+
+    $this->assertContains('preload', $headers['Strict-Transport-Security']);
+    $this->assertContains('includeSubDomains', $headers['Strict-Transport-Security']);
+    unset($config);
+    unset($headers);
+  }
+
+  public function testHpkp(): void
+  {
+    $config = $this->getConfig();
+    $config['hpkp']['hashes'] = [
+      [
+        'algo' => 'sha256',
+        'hash' => 'cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs='
+      ]
+    ];
+
+    $config['hpkp']['include-subdomains'] = true;
+
+    $headers = $this->getBuilder($config)->headers();
+
+    $this->assertArrayHasKey('Public-Key-Pins', $headers);
+
+    $hpkp = "pin-sha256=\"cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs=\"; " .
+            "max-age=5184000; includeSubDomains";
+    
+    $this->assertSame($hpkp, $headers['Public-Key-Pins']);
+
+    unset($config);
+    unset($headers);
+  }
+
+  public function testHpkpWithoutHash(): void
+  {
+    $headers = $this->getBuilder()->headers();
+
+    $this->assertArrayNotHasKey('Public-Key-Pins', $headers);
+
+    unset($headers);
+  }
+
+  public function testHpkpWithHash(): void
+  {
+    $config = $this->getConfig();
+    $config['hpkp']['hashes'] = [
+      [
+        'algo' => 'sha256',
+        'hash' => 'cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs='
+      ],
+      [
+        'algo' => 'sha256',
+        'hash' => 'M8HztCzM3elUxkcjR2S5P4hhyBNf6lHkmjAHKhpGPWE='
+      ]
+    ];
+
+    $headers = $this->getBuilder($config)->headers();
+
+    $this->assertArrayHasKey('Public-Key-Pins', $headers);   
+
+    unset($config);
+    unset($headers);
+  }
+
+  public function testHpkpReport(): void
+  {
+    $config = $this->getConfig();
+    $config['hpkp']['report-only'] = true;
+    $config['hpkp']['hashes'] = [
+      [
+        'algo' => 'sha256',
+        'hash' => 'cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs='
+      ],
+      [
+        'algo' => 'sha256',
+        'hash' => 'M8HztCzM3elUxkcjR2S5P4hhyBNf6lHkmjAHKhpGPWE='
+      ]
+    ];
+
+    $headers = $this->getBuilder($config)->headers();
+    
+    $this->assertArrayNotHasKey('Public-Key-Pins-Report-Only', $headers); 
+    $this->assertArrayHasKey('Public-Key-Pins', $headers); 
+  
+    $config['hpkp']['report-uri'] = 'https://report-uri.io/reportOnly';
+    $headers = $this->getBuilder($config)->headers();
+
+    $this->assertArrayHasKey('Public-Key-Pins-Report-Only', $headers);
+      
+    unset($config);
+    unset($headers);
+  }
+
+  public function testCspWithStrcsp(): void
+  {
+    $config = $this->getConfig();
+    $config['str-csp'] = "script-src 'self' 'nonce-SomeRandomNonce'";
+
+    $headers = $this->getBuilder($config)->headers();
+
+    $this->assertTrue($headers['Content-Security-Policy'] === $config['str-csp']);
+
+    unset($config);
+    unset($headers);
+  }
+
+  public function testCspWithoutStrcsp(): void
+  {
+    $headers = $this->getBuilder()->headers();
+
+    $this->assertArrayHasKey('Content-Security-Policy', $headers);
+    $this->assertTrue(is_string($headers['Content-Security-Policy']));
+
+    unset($headers);
   }
 }
