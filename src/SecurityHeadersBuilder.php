@@ -38,11 +38,12 @@ class SecurityHeadersBuilder {
 
 
     /**
-     * Merges headers then stores it in the protected $headers property.
+     * Merges policies then stores it in the protected $policies property.
+     * Retuns policies
      *
      * @return array
      */
-    protected function headers(): array
+    public function headers(): array
     {
         if (!empty($this->policies)) {
             return $this->policies;
@@ -51,7 +52,7 @@ class SecurityHeadersBuilder {
         $headers = array_merge(
             $this->hsts(),
             $this->csp(),
-            $this->ecp(),
+            $this->ect(),
             $this->hpkp(),
             $this->getCompiledPolicies()
         );
@@ -97,18 +98,18 @@ class SecurityHeadersBuilder {
      * 
      * @return array
      */
-    protected function ecp(): array
+    protected function ect(): array
     {
-        $enabled = $this->config['ecp']['enabled'];
-        $maxAge = $this->config['ecp']['max-age'];
-        $enforce = $this->config['ecp']['enforce'];
-        $reportUri = $this->config['ecp']['report-uri'];
+        $enabled = $this->config['ect']['enabled'];
+        $maxAge = $this->config['ect']['max-age'];
+        $enforce = $this->config['ect']['enforce'];
+        $reportUri = $this->config['ect']['report-uri'];
 
         if (!$enabled) {
             return [];
         }
 
-        $policy = " max-age={$this->config['ecp']['max-age']}";
+        $policy = " max-age={$maxAge}";
 
         if ($enforce) {
             $policy .= '; enforce';

@@ -27,19 +27,23 @@ final class SecurityHeadersBuilderTest extends TestCase {
     return $this->config;
   }
 
-  protected function getBuilder(): SecurityHeadersBuilder
+  protected function getBuilder(array $config = []): SecurityHeadersBuilder
   {
-    $sh = new SecurityHeadersBuilder($this->getConfig());
+    if (empty($config)) {
+      $config = $this->getConfig();
+    }
+
+    $sh = new SecurityHeadersBuilder($config);
 
     return $sh;
   }
 
   public function testNoSyntaxError() : void
   {
-    $obj = $this->getBuilder();
+    $sh = $this->getBuilder();
 
-    $this->assertTrue(is_object($obj));
-    unset($obj);
+    $this->assertTrue(is_object($sh));
+    unset($sh);
   }
   
   // public function testHeadersOutput(): void 
@@ -49,4 +53,19 @@ final class SecurityHeadersBuilderTest extends TestCase {
   //   // $this->assertTrue($var->method1("hey") == 'Hello World');
   //   unset($sh);
   // }
+
+
+
+  public function testEnabledPolicy()
+  {
+      $config = $this->getConfig();
+      $config['ecp']['enabled'] = true;
+
+      $headers = $this->getBuilder($config)->headers();
+      
+      $this->assertArrayHasKey('Expect-CT', $headers);
+
+      unset($config);
+      unset($headers);
+  }
 }
