@@ -38,32 +38,49 @@ final class SecurityHeadersBuilderTest extends TestCase {
     return $sh;
   }
 
-  public function testNoSyntaxError() : void
+  public function testNoSyntaxError(): void
   {
     $sh = $this->getBuilder();
 
     $this->assertTrue(is_object($sh));
     unset($sh);
   }
-  
-  // public function testHeadersOutput(): void 
-  // {
-  //   $sh = $this->getBuilder();
 
-  //   // $this->assertTrue($var->method1("hey") == 'Hello World');
-  //   unset($sh);
-  // }
+  public function testHeadersIsArray(): void
+  {
+    $headers = $this->getBuilder()->headers();
 
+    $this->assertTrue(is_array($headers));
 
+    unset($headers);
+  }
 
-  public function testEnabledPolicy()
+  public function testEnabledPolicy(): void
   {
       $config = $this->getConfig();
-      $config['ecp']['enabled'] = true;
+      $config['ect']['enabled'] = true;
+      $config['hsts']['enabled'] = true;
 
       $headers = $this->getBuilder($config)->headers();
       
       $this->assertArrayHasKey('Expect-CT', $headers);
+      $this->assertArrayHasKey('Strict-Transport-Security', $headers);
+
+      unset($config);
+      unset($headers);
+  }
+
+
+  public function testDisabledPolicy(): void
+  {
+      $config = $this->getConfig();
+      $config['ect']['enabled'] = false;
+      $config['hsts']['enabled'] = false;      
+
+      $headers = $this->getBuilder($config)->headers();
+      
+      $this->assertArrayNotHasKey('Expect-CT', $headers);
+      $this->assertArrayNotHasKey('Strict-Transport-Security', $headers);      
 
       unset($config);
       unset($headers);

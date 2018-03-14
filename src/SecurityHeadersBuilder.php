@@ -36,7 +36,6 @@ class SecurityHeadersBuilder {
 
     }
 
-
     /**
      * Merges policies then stores it in the protected $policies property.
      * Retuns policies
@@ -130,7 +129,7 @@ class SecurityHeadersBuilder {
      * 
      * @return array
      */
-    protected function csp() : array
+    protected function csp(): array
     {
         if (!empty($this->config['str-csp'])) {
             return [
