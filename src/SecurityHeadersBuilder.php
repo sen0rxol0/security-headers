@@ -160,10 +160,10 @@ class SecurityHeadersBuilder {
         if ($reportUri) {
             $policy .= '; report-uri="' . $reportUri . '"';
         }
-        
+
         $policyName = ($reportOnly && !empty($reportUri))
-            ? 'Public-Key-Pins-Report-Only: '
-            : 'Public-Key-Pins: ';
+            ? 'Public-Key-Pins-Report-Only:'
+            : 'Public-Key-Pins:';
 
         return [
            $policyName => $policy
