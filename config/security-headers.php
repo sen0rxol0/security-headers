@@ -63,9 +63,11 @@ return [
     /*
      * HTTP Public Key Pinning
      *
-     * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hpkp
+     * References: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hpkp
+     * https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning
      * 
-     * hpkp will be ignored if hashes not provided, hash must ve generate from your server cetificates files
+     * HPKP will be ignored if hashes are not provided, 
+     * hashes must be generate from your server cetificates files
      * 
      * HPKP will probably be deprecated from this package
      * Read more: https://blog.qualys.com/ssllabs/2016/09/06/is-http-public-key-pinning-dead
@@ -75,7 +77,7 @@ return [
         'hashes' => [
             // [
             //     'algo' => 'sha256', // Browsers currently only support sha256 public key pins.
-            //     'hash' => 'hash-value',
+            //     'hash' => 'base64-encoded hash',
             // ],
         ],
         'include-sub-domains' => false,

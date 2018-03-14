@@ -137,7 +137,13 @@ class SecurityHeadersBuilder {
 
         foreach ($hashes as $h) {
             $policy .= 'pin-' . $h['algo'] . '=';
-            $policy .= \json_encode($h['hash']);
+
+            if (base64_encode(base64_decode($h['hash'], true)) === $h['hash']){
+                $policy .= \json_encode($h['hash']);
+            } else {
+                $policy .= \json_encode(base64_encode($h['hash']));
+            }
+            
             $policy .= '; ';
         }
 
