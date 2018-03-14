@@ -72,7 +72,7 @@ return [
         // hash is required, generated if not profided when enabled
         'hashes' => [
             // [
-            //     'algo' => 'sha256',
+            //     'algo' => 'sha256', // Browsers currently only support sha256 public key pins.
             //     'hash' => 'hash-value',
             // ],
         ],

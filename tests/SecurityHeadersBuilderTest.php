@@ -11,11 +11,25 @@ final class SecurityHeadersBuilderTest extends TestCase {
    */
   protected $configPath = __DIR__ . '/../config/security-headers.php';
 
+  /**
+   * @var array
+   */
+  protected $config = [];
+
+  protected function getConfig(): array
+  {
+    if (empty($this->config)) {
+      $config = require $this->configPath;
+      $this->config = $config;
+      return $config;      
+    }
+
+    return $this->config;
+  }
+
   protected function getBuilder(): SecurityHeadersBuilder
   {
-    $config = require $this->configPath;
-
-    $sh = new SecurityHeadersBuilder($config);
+    $sh = new SecurityHeadersBuilder($this->getConfig());
 
     return $sh;
   }

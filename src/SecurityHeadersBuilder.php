@@ -112,7 +112,6 @@ class SecurityHeadersBuilder {
         );
 
         $csp = CSPBuilder::fromArray($this->config['csp']);
-        // $csp->sendCSPHeader();
 
         return $csp->getHeaderArray();
     }
