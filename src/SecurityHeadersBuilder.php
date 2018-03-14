@@ -124,10 +124,6 @@ class SecurityHeadersBuilder {
      */
     protected function hpkp(): array
     {
-        if (!$this->config['hpkp']['enabled']) {
-            return [];
-        }
-
         $policy = ' ';
         $hashes = $this->config['hpkp']['hashes'] ?? [];        
         $maxAge = $this->config['hpkp']['max-age'] ?? 5184000;
@@ -136,15 +132,10 @@ class SecurityHeadersBuilder {
         $reportUri = $this->config['hpkp']['report-uri'] ?? null;
 
         if (empty($hashes)) {
-            $hash = $this->hash();
-
-            $this->config['hpkp']['hashes'][] =  [
-                'algo' => 'sha256',
-                'hash' => $hash
-            ];
+            return [];
         }
 
-        foreach ($this->config['hpkp']['hashes'] as $h) {
+        foreach ($hashes as $h) {
             $policy .= 'pin-' . $h['algo'] . '=';
             $policy .= \json_encode($h['hash']);
             $policy .= '; ';
@@ -208,19 +199,19 @@ class SecurityHeadersBuilder {
     }
 
 
-    /**
-     * Generates a new hash for algo
-     *
-     * @param string $algo
-     * @param string $script
-     * @return string
-     */
-    protected function hash(string $algo = 'sha256', string $script = ''): string 
-    {
-        $hash = \hash($algo, $script);
+    // /**
+    //  * Generates a new hash for algo
+    //  *
+    //  * @param string $algo
+    //  * @param string $script
+    //  * @return string
+    //  */
+    // protected function hash(string $algo = 'sha256', string $script = ''): string 
+    // {
+    //     $hash = \hash($algo, $script);
 
-        // bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
+    //     // bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
 
-        return $hash;
-    }
+    //     return $hash;
+    // }
 }

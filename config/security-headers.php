@@ -65,11 +65,10 @@ return [
      *
      * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hpkp
      *
-     * hpkp will be ignored if hashes if not enabled .
+     * hpkp will be ignored if hashes not provided, hash must ve generate from your server cetificates files
      */
     'hpkp' => [
-        'enabled' => false,
-        // hash is required, generated if not profided when enabled
+        // hash is required
         'hashes' => [
             // [
             //     'algo' => 'sha256', // Browsers currently only support sha256 public key pins.
