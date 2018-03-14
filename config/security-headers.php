@@ -52,7 +52,7 @@ return [
      *
      * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hsts
      *
-     * Ensure that your app is under https before enabling this.
+     * Ensure that your app is under https before enabling HSTS.
      */
     'hsts' => [
         'enabled' => false,
@@ -64,11 +64,14 @@ return [
      * HTTP Public Key Pinning
      *
      * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hpkp
-     *
+     * 
      * hpkp will be ignored if hashes not provided, hash must ve generate from your server cetificates files
+     * 
+     * HPKP will probably be deprecated from this package
+     * Read more: https://blog.qualys.com/ssllabs/2016/09/06/is-http-public-key-pinning-dead
      */
     'hpkp' => [
-        // hash is required
+        // hashs are required
         'hashes' => [
             // [
             //     'algo' => 'sha256', // Browsers currently only support sha256 public key pins.
