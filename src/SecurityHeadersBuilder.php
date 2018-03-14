@@ -51,8 +51,9 @@ class SecurityHeadersBuilder {
         $headers = array_merge(
             $this->hsts(),
             $this->csp(),
+            $this->ecp(),
             $this->hpkp(),
-            $this->getOtherPolicies()
+            $this->getCompiledPolicies()
         );
 
         $this->policies = $headers;
@@ -67,19 +68,58 @@ class SecurityHeadersBuilder {
      */
     protected function hsts(): array
     {
-        if (!$this->config['hsts']['enabled']) {
+        $enabled = $this->config['hsts']['enabled'];
+        $preload = $this->config['hsts']['preload'];
+        $maxAge = $this->config['hsts']['max-age'];
+        $includeSubs = $this->config['hsts']['include-sub-domains'];
+
+        if (!$enabled) {
             return [];
         }
 
-        $hsts = "max-age={$this->config['hsts']['max-age']}";
+        $policy = " max-age={$maxAge}";
 
-        if ($this->config['hsts']['include-sub-domains']) {
-            $hsts .= '; includeSubDomains';
+        if ($includeSubs) {
+            $policy .= '; includeSubDomains';
         }
-        // $hsts .= ' preload';
+
+        if ($preload) {
+            $policy .= '; preload';
+        }
 
         return [
-            'Strict-Transport-Security' => $hsts
+            'Strict-Transport-Security' => $policy
+        ];
+    }
+
+    /**
+     * Get an associative array of Expect-CT header
+     * 
+     * @return array
+     */
+    protected function ecp(): array
+    {
+        $enabled = $this->config['ecp']['enabled'];
+        $maxAge = $this->config['ecp']['max-age'];
+        $enforce = $this->config['ecp']['enforce'];
+        $reportUri = $this->config['ecp']['report-uri'];
+
+        if (!$enabled) {
+            return [];
+        }
+
+        $policy = " max-age={$this->config['ecp']['max-age']}";
+
+        if ($enforce) {
+            $policy .= '; enforce';
+        }
+
+        if (!empty($reportUri)) {
+            $policy .= '; report-uri=' . strval($reportUri);
+        }
+
+        return [
+            'Expect-CT' => $policy
         ];
     }
 
@@ -101,24 +141,17 @@ class SecurityHeadersBuilder {
             // throw new Error('Could not parse configuration!');
         }
 
-        $this->$config['csp'] = $this->nonce(
-            $this->config['csp'], 
-            'script-src'
-        );
-
-        $this->$config['csp'] = $this->nonce(
-            $this->config['csp'], 
-            'style-src'
-        );
-
         $csp = CSPBuilder::fromArray($this->config['csp']);
+
+        // $csp->nonce('script-src');
+        // $csp->nonce('style-src');
 
         return $csp->getHeaderArray();
     }
 
 
     /**
-     * Create HPKP header.
+     * Get an associative array HPKP header.
      *
      * @return array
      */
@@ -139,11 +172,11 @@ class SecurityHeadersBuilder {
             $policy .= 'pin-' . $h['algo'] . '=';
 
             if (base64_encode(base64_decode($h['hash'], true)) === $h['hash']){
-                $policy .= \json_encode($h['hash']);
+                $policy .= strval($h['hash']);
             } else {
-                $policy .= \json_encode(base64_encode($h['hash']));
+                $policy .= strval(base64_encode($h['hash']));
             }
-            
+
             $policy .= '; ';
         }
 
@@ -158,8 +191,8 @@ class SecurityHeadersBuilder {
         }
 
         $policyName = ($reportOnly && !empty($reportUri))
-            ? 'Public-Key-Pins-Report-Only:'
-            : 'Public-Key-Pins:';
+            ? 'Public-Key-Pins-Report-Only'
+            : 'Public-Key-Pins';
 
         return [
            $policyName => $policy
@@ -171,7 +204,7 @@ class SecurityHeadersBuilder {
      *
      * @return array
      */
-    protected function getOtherPolicies(): array
+    protected function getCompiledPolicies(): array
     {
         return array_filter([
             'X-Content-Type-Options' => $this->config['x-content-type-options'],
@@ -181,43 +214,4 @@ class SecurityHeadersBuilder {
             'Referrer-Policy' => $this->config['referrer-policy'],
         ]);
     }
-
-    /**
-     * Adds a new nonce to policy directive. Returns the policy data.
-     *
-     * @param array $policy
-     * @param string $directive
-     * @return array
-     */
-    public function nonce(array $policy = [], string $directive = 'script-src'): array
-    {
-        $policyKeys = array_keys($policy);
-
-        if (!in_array($directive, $policyKeys)) {
-            return '';
-        }
-
-        $nonce = base64_encode(random_bytes(18));
-
-        $policy[$directive]['nonces'][] = $nonce;
-
-        return $policy;
-    }
-
-
-    // /**
-    //  * Generates a new hash for algo
-    //  *
-    //  * @param string $algo
-    //  * @param string $script
-    //  * @return string
-    //  */
-    // protected function hash(string $algo = 'sha256', string $script = ''): string 
-    // {
-    //     $hash = \hash($algo, $script);
-
-    //     // bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
-
-    //     return $hash;
-    // }
 }

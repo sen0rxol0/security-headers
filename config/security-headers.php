@@ -56,8 +56,22 @@ return [
      */
     'hsts' => [
         'enabled' => false,
+        'preload' => false,
         'max-age' => 31536000,
         'include-sub-domains' => true
+    ],
+
+    /**
+     * Expect-CT
+     * 
+     * References: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT
+     * https://scotthelme.co.uk/a-new-security-header-expect-ct/
+     */
+    'ect' => [
+        'enabled' => false,
+        'max-age' => 30,
+        'enforce' => true,
+        'report-uri' => '<uri>'
     ],
 
     /*
@@ -69,8 +83,8 @@ return [
      * HPKP will be ignored if hashes are not provided, 
      * hashes must be generate from your server cetificates files
      * 
-     * HPKP will probably be deprecated from this package
-     * Read more: https://blog.qualys.com/ssllabs/2016/09/06/is-http-public-key-pinning-dead
+     * HPKP will probably be deprecated
+     * Read more: https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ
      */
     'hpkp' => [
         // hashs are required
@@ -102,19 +116,14 @@ return [
         'report-only' => false,
         'report-uri' => null, // csp violation reporting endpoint
         'upgrade-insecure-requests' => false,
-        'base-uri' => [
-            //
-        ],
-
-        'default-src' => 'none',
-
+        'base-uri' => [],
+        'default-src' => [],
         'child-src' => [
             'allow' => [
                 // 'https://www.youtube.com'
             ],
             'self' => false
         ],
-
         'script-src' => [
             'allow' => [
                 'https://www.google-analytics.com'                
@@ -122,67 +131,32 @@ return [
             'hashes' => [
                 // ['sha256' => 'hash-value'],
             ],
-            'nonces' => [
-                //
-            ],
+            'nonces' => [],
             'self' => true,
             'unsafe-inline' => false,
-            'unsafe-eval' => false,
-            'add-generated-nonce' => false
+            'unsafe-eval' => false
         ],
-
         'style-src' => [
-            'allow' => [
-                //
-            ],
-            'nonces' => [
-                //
-            ],
-            'self' => true,
-            'unsafe-inline' => false,
-            'add-generated-nonce' => false,
+            'self' => true
         ],
-
         'img-src' => [
-            'allow' => [
-                //
-            ],
-            'types' => [
-                //
-            ],
+            'blob' => true,
             'self' => true,
             'data' => true
         ],
-
-        'connect-src' => [
-            //
-        ],
-
+        'connect-src' => [],
         'font-src' => [
             'self' => true
         ],
-
         'form-action' => [
             'allow' => [
                 // "https://example.com"
             ],
             'self' => true
         ],
-
-        'frame-ancestors' => [
-            //
-        ],
-
-        'media-src' => [
-            //
-        ],
-
-        'object-src' => [
-            //
-        ],
-
-        'plugin-types' => [
-            //
-        ]      
+        'frame-ancestors' => [],
+        'media-src' => [],
+        'object-src' => [],
+        'plugin-types' => []      
     ]
 ];
