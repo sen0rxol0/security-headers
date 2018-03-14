@@ -4,6 +4,13 @@ namespace Sen0rxol0\SecurityHeaders;
 
 use Illuminate\Support\ServiceProvider;
 
+
+/**
+*  Class SecurityHeadersServiceProvider
+*
+*  @package Sen0rxol0/SecurityHeaders
+*  @author Walter Varela @sen0rxol0
+*/
 class SecurityHeadersServiceProvider extends ServiceProvider
 {
     /**

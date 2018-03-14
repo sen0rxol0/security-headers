@@ -7,11 +7,9 @@ use Illuminate\Http\Request;
 
 
 /**
-*  A sample class
+*  Class SecurityHeadersMiddleware
 *
-*  Use this section to define what this class is doing, the PHPDocumentator will use this
-*  to automatically generate an API documentation using this information.
-*
+*  @package Sen0rxol0/SecurityHeaders
 *  @author Walter Varela @sen0rxol0
 */
 class SecurityHeadersMiddleware

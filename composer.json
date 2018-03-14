@@ -1,13 +1,15 @@
 {
     "name": "sen0rxol0/security-headers",
-    "description": "Small package that serves as a middleware to inject HTTP response headers for improved security",
+    "description": "This package serves as a middleware to inject HTTP response headers for improved security",
     "keywords": ["laravel", "security", "headers", "package"],
     "homepage": "https://github.com/sen0rxol0/security-headers",
     "license": "MIT",
     "authors": [
         {
             "name": "sen0rxol0",
-            "email": "sen0rxol0@gmail.com"
+            "email": "sen0rxol0@gmail.com",
+            "homepage": "https://waltervarela.me",
+            "role": "Web Developer"
         }
     ],
     "type": "project",

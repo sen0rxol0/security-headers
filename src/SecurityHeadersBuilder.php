@@ -11,6 +11,7 @@ use ParagonIE\HPKPBuilder\HPKPBuilder;
 *
 *  Build security headers to enhance HTTP responses headers
 *
+*  @package Sen0rxol0/SecurityHeaders
 *  @author Walter Varela @sen0rxol0
 */
 class SecurityHeadersBuilder {
