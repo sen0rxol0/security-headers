@@ -71,7 +71,7 @@ return [
         'enabled' => false,
         'max-age' => 30,
         'enforce' => true,
-        'report-uri' => '<uri>'
+        'report-uri' => ''
     ],
 
     /*
@@ -87,7 +87,7 @@ return [
      * Read more: https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ
      */
     'hpkp' => [
-        // hashs are required
+        // hashes are required
         'hashes' => [
             // [
             //     'algo' => 'sha256', // Browsers currently only support sha256 public key pins.
