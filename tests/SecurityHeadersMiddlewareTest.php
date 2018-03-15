@@ -39,7 +39,7 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
 
     protected function registerMiddleware()
     {
-        $kernel = $app->make(Kernel::class);
+        $kernel = $this->app->make(Kernel::class);
         $kernel->pushMiddleware(SecurityHeadersMiddleware::class);
     }
 
