@@ -125,6 +125,7 @@ return [
             'self' => false
         ],
         'script-src' => [
+            'add-nonces' => true,
             'allow' => [
                 'https://www.google-analytics.com'                
             ],
