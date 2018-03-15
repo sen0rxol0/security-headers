@@ -31,15 +31,19 @@ class SecurityHeadersMiddleware
         $policies = $headers->policies();
         $nonces = $headers->getNonces();
 
-        foreach ($policies as $key => $value) {
-            $response->headers->set($key, $value, true);
+        foreach ($policies as $key => $policy) {
+            $response->headers->set($key, $policy, true);
         }
 
-        if (!empty($nonces)) {
-            foreach ($policies as $key => $value) {
-                $response->headers->set($key, $value, true);
-            }
-        }
+        // if (!empty($nonces)) {
+        //     foreach ($nonces as $key => $nonce) {
+        //         switch ($key) {
+        //             case 'script':
+        //                 \Config::set('script_nonce', $value);                 
+        //                 break;
+        //         }
+        //     }
+        // }
 
         return $response;
     }

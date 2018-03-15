@@ -63,20 +63,25 @@ final class SecurityHeadersBuilderTest extends TestCase {
     unset($policies);
   }
 
-  // /**
-  //  * @covers SecurityHeadersBuilder::getNonces
-  //  */
-  // public function testNonces(): void
-  // {
-  //   $policies = $this->getBuilder()->policies();
-  //   $nonces = $this->getBuilder()->getNonces();
+  /**
+   * @covers SecurityHeadersBuilder::getNonces
+   */
+  public function testNonces(): void
+  {
+    $config = $this->getConfig();
 
-  //   $this->assertTrue(is_array($nonces));
-  //   $this->assertArrayHasKey('script', $nonces);
+    $sh = new SecurityHeadersBuilder($config, Container::getInstance());
 
-  //   unset($policies);
-  //   unset($nonces);
-  // }
+    $policies = $sh->policies();
+    $nonces = $sh->getNonces();
+
+    $this->assertTrue(is_array($nonces));
+    $this->assertArrayHasKey('script', $nonces);
+    $this->assertTrue(is_array($nonces['script']));
+
+    unset($policies);
+    unset($nonces);
+  }
 
   /**
    * @covers SecurityHeadersBuilder::ecp
