@@ -18,6 +18,8 @@ Publish the configuration file
   php artisan vendor:publish --tag="config"
 ```
 
+Now that the config file may be published at `config\headers.php`
+
 Add `SecurityHeadersMiddleware` to your application global middleware in `app\Http\Kernel.php`
 
 ```php
