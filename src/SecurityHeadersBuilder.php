@@ -22,9 +22,9 @@ class SecurityHeadersBuilder {
     protected $config = [];
 
     /**
-     * @var Illuminate\Container\Container
+     * @var array
      */
-    protected $container;
+    protected $nonces = [];
 
     /**
      * @var array
@@ -67,6 +67,16 @@ class SecurityHeadersBuilder {
         $this->policies = $policies;
 
         return $policies;
+    }
+
+    /**
+     * Retuns nonces
+     *
+     * @return array
+     */
+    public function getNonces(): array
+    {
+        return $this->nonces;
     }
 
     /**
@@ -116,7 +126,7 @@ class SecurityHeadersBuilder {
             return [];
         }
 
-        $policy = " max-age={$maxAge}";
+        $policy = "max-age={$maxAge}";
 
         if ($enforce) {
             $policy .= '; enforce';
@@ -152,10 +162,13 @@ class SecurityHeadersBuilder {
         $csp = CSPBuilder::fromArray($this->config['csp']);
 
         $nonce = $csp->nonce('script-src');
-        $this->container->instance('headers.csp.scrit-src.nonce', $nonce);
 
-        // $nonce = $csp->nonce('style-src');
-        // $this->container->instance('shnonce.style', $nonce);        
+        $this->nonces = array_merge(
+            $this->nonces,
+            ['script' => $nonce]
+        );
+
+        // $nonce = $csp->nonce('style-src');   
         
         return $csp->getHeaderArray();
     }

@@ -52,9 +52,9 @@ final class SecurityHeadersBuilderTest extends TestCase {
   }
 
   /**
-   * @covers SecurityHeadersBuilder::headers
+   * @covers SecurityHeadersBuilder::policies
    */
-  public function testHeadersIsArray(): void
+  public function testPolicies(): void
   {
     $policies = $this->getBuilder()->policies();
 
@@ -62,6 +62,21 @@ final class SecurityHeadersBuilderTest extends TestCase {
 
     unset($policies);
   }
+
+  // /**
+  //  * @covers SecurityHeadersBuilder::getNonces
+  //  */
+  // public function testNonces(): void
+  // {
+  //   $policies = $this->getBuilder()->policies();
+  //   $nonces = $this->getBuilder()->getNonces();
+
+  //   $this->assertTrue(is_array($nonces));
+  //   $this->assertArrayHasKey('script', $nonces);
+
+  //   unset($policies);
+  //   unset($nonces);
+  // }
 
   /**
    * @covers SecurityHeadersBuilder::ecp
@@ -231,6 +246,7 @@ final class SecurityHeadersBuilderTest extends TestCase {
 
     $this->assertArrayHasKey('Content-Security-Policy', $policies);
     $this->assertTrue(is_string($policies['Content-Security-Policy']));
+    // $this->assertContains('script-src \'nonce', $policies['Content-Security-Policy']);
 
     unset($policies);
   }
@@ -248,21 +264,6 @@ final class SecurityHeadersBuilderTest extends TestCase {
     $this->assertTrue($policies['Content-Security-Policy'] === $config['str-csp']);
 
     unset($config);
-    unset($policies);
-  }
-
-  /**
-   * 
-   */
-  public function testCspStoresNonce(): void
-  {
-    $policies = $this->getBuilder()->policies();
-    
-    $container = Container::getInstance();
-
-    $this->assertArrayHasKey('shnonce.script', $container);
-    // $this->assertTrue(is_string($policies['Content-Security-Policy']));
-
     unset($policies);
   }
 }

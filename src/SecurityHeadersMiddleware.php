@@ -1,6 +1,6 @@
 <?php
 
-namespace Sen0roxol0\SecurityHeaders;
+namespace Sen0rxol0\SecurityHeaders;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -29,12 +29,16 @@ class SecurityHeadersMiddleware
         $headers = new SecurityHeadersBuilder(config('headers', []));
 
         $policies = $headers->policies();
-
-
-        // foreach ($nonces as $nonce)
+        $nonces = $headers->getNonces();
 
         foreach ($policies as $key => $value) {
             $response->headers->set($key, $value, true);
+        }
+
+        if (!empty($nonces)) {
+            foreach ($policies as $key => $value) {
+                $response->headers->set($key, $value, true);
+            }
         }
 
         return $response;

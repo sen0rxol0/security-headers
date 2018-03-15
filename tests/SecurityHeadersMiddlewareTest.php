@@ -19,9 +19,9 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
     //     $request = Request::create('http://example.com/', 'GET');
 
     //     // Pass it to the middleware
-    //     $middleware = new SecurityHeadersMiddleware();
+    //     // $middleware = new SecurityHeadersMiddleware();
 
-    //     $response = $middleware->handle($request, function () {});
+    //     // $response = $middleware->handle($request, function () {});
     //     $this->assertEquals($response->getStatusCode(), 200);
     // }
 
