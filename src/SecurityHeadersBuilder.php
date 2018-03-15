@@ -155,6 +155,8 @@ class SecurityHeadersBuilder {
             ];
         }
 
+        $scriptNonces = $this->config['csp']['script-src']['nonces'];
+
         if (empty($this->config['csp'])) {
             // throw new Error('Could not parse configuration!');
         }
@@ -162,15 +164,18 @@ class SecurityHeadersBuilder {
         $csp = CSPBuilder::fromArray($this->config['csp']);
 
         if ($this->config['csp']['script-src']['add-nonces']) {
-            $scriptNonce = $csp->nonce('script-src');
-    
-            $this->nonces = array_merge(
-                $this->nonces,
-                ['script' => $scriptNonce]
-            );
+            if (!empty($scriptNonces)) {
+                foreach ($scriptNonces as $nonce) {
+                    $scriptNonce = $csp->nonce('script-src', $nonce);                    
+                }              
+            } else {
+                $scriptNonces[] = $csp->nonce('script-src');
+            }
         }
 
-        // $nonce = $csp->nonce('style-src');   
+        // $nonce = $csp->nonce('style-src');
+
+        $this->nonces['script'] = $scriptNonces;
         
         return $csp->getHeaderArray();
     }
