@@ -26,9 +26,14 @@ class SecurityHeadersMiddleware
     {
         $response = $next($request);
 
-        $headers = (new SecurityHeadersBuilder(config('security-headers', [])))->headers();
+        $headers = new SecurityHeadersBuilder(config('headers', []));
 
-        foreach ($headers as $key => $value) {
+        $policies = $headers->policies();
+
+
+        // foreach ($nonces as $nonce)
+
+        foreach ($policies as $key => $value) {
             $response->headers->set($key, $value, true);
         }
 

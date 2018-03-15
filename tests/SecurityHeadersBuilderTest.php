@@ -1,7 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+// use Orchestra\Testbench\TestCase as Orchestra;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersBuilder;
+use Illuminate\Container\Container;
 
 
 final class SecurityHeadersBuilderTest extends TestCase {
@@ -9,7 +11,7 @@ final class SecurityHeadersBuilderTest extends TestCase {
   /**
    * @var string
    */
-  protected $configPath = __DIR__ . '/../config/security-headers.php';
+  protected $configPath = __DIR__ . '/../config/headers.php';
 
   /**
    * @var array
@@ -33,15 +35,14 @@ final class SecurityHeadersBuilderTest extends TestCase {
       $config = $this->getConfig();
     }
 
-    $sh = new SecurityHeadersBuilder($config);
+    $sh = new SecurityHeadersBuilder($config, Container::getInstance());
 
     return $sh;
   }
 
   /**
-   * @covers 
+   * @covers SecurityHeadersBuilder
    */
-
   public function testNoSyntaxError(): void
   {
     $sh = $this->getBuilder();
@@ -50,67 +51,83 @@ final class SecurityHeadersBuilderTest extends TestCase {
     unset($sh);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::headers
+   */
   public function testHeadersIsArray(): void
   {
-    $headers = $this->getBuilder()->headers();
+    $policies = $this->getBuilder()->policies();
 
-    $this->assertTrue(is_array($headers));
+    $this->assertTrue(is_array($policies));
 
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::ecp
+   * @covers SecurityHeadersBuilder::hsts
+   */
   public function testEnabledPolicy(): void
   {
       $config = $this->getConfig();
       $config['ect']['enabled'] = true;
       $config['hsts']['enabled'] = true;
 
-      $headers = $this->getBuilder($config)->headers();
+      $policies = $this->getBuilder($config)->policies();
       
-      $this->assertArrayHasKey('Expect-CT', $headers);
-      $this->assertArrayHasKey('Strict-Transport-Security', $headers);
+      $this->assertArrayHasKey('Expect-CT', $policies);
+      $this->assertArrayHasKey('Strict-Transport-Security', $policies);
 
       unset($config);
-      unset($headers);
+      unset($policies);
   }
 
-
+  /**
+   * @covers SecurityHeadersBuilder::ecp
+   * @covers SecurityHeadersBuilder::hsts
+   */
   public function testDisabledPolicy(): void
   {
       $config = $this->getConfig();
       $config['ect']['enabled'] = false;
       $config['hsts']['enabled'] = false;      
 
-      $headers = $this->getBuilder($config)->headers();
+      $policies = $this->getBuilder($config)->policies();
       
-      $this->assertArrayNotHasKey('Expect-CT', $headers);
-      $this->assertArrayNotHasKey('Strict-Transport-Security', $headers);   
+      $this->assertArrayNotHasKey('Expect-CT', $policies);
+      $this->assertArrayNotHasKey('Strict-Transport-Security', $policies);   
 
       unset($config);
-      unset($headers);
+      unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::hsts
+   */
   public function testHsts(): void
   {
     $config = $this->getConfig();
     $config['hsts']['enabled'] = true;
     $config['hsts']['preload'] = true;
 
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
 
-    $this->assertContains('preload', $headers['Strict-Transport-Security']);
-    $this->assertContains('includeSubDomains', $headers['Strict-Transport-Security']);
+    $this->assertContains('preload', $policies['Strict-Transport-Security']);
+    $this->assertContains('includeSubDomains', $policies['Strict-Transport-Security']);
 
     $policy = "max-age=31536000; includeSubDomains; preload";
 
     $this->assertArraySubset([
       'Strict-Transport-Security' => $policy
-    ], $headers);
+    ], $policies);
 
     unset($config);
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::hpkp
+   */
   public function testHpkp(): void
   {
     $config = $this->getConfig();
@@ -123,28 +140,34 @@ final class SecurityHeadersBuilderTest extends TestCase {
 
     $config['hpkp']['include-subdomains'] = true;
 
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
 
-    $this->assertArrayHasKey('Public-Key-Pins', $headers);
+    $this->assertArrayHasKey('Public-Key-Pins', $policies);
 
     $hpkp = "pin-sha256=\"cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs=\"; " .
             "max-age=5184000; includeSubDomains";
     
-    $this->assertSame($hpkp, $headers['Public-Key-Pins']);
+    $this->assertSame($hpkp, $policies['Public-Key-Pins']);
 
     unset($config);
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::hpkp
+   */
   public function testHpkpWithoutHash(): void
   {
-    $headers = $this->getBuilder()->headers();
+    $policies = $this->getBuilder()->policies();
 
-    $this->assertArrayNotHasKey('Public-Key-Pins', $headers);
+    $this->assertArrayNotHasKey('Public-Key-Pins', $policies);
 
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::hpkp
+   */
   public function testHpkpWithHash(): void
   {
     $config = $this->getConfig();
@@ -159,14 +182,17 @@ final class SecurityHeadersBuilderTest extends TestCase {
       ]
     ];
 
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
 
-    $this->assertArrayHasKey('Public-Key-Pins', $headers);   
+    $this->assertArrayHasKey('Public-Key-Pins', $policies);   
 
     unset($config);
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::hpkp
+   */
   public function testHpkpReport(): void
   {
     $config = $this->getConfig();
@@ -182,40 +208,61 @@ final class SecurityHeadersBuilderTest extends TestCase {
       ]
     ];
 
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
     
-    $this->assertArrayNotHasKey('Public-Key-Pins-Report-Only', $headers); 
-    $this->assertArrayHasKey('Public-Key-Pins', $headers); 
+    $this->assertArrayNotHasKey('Public-Key-Pins-Report-Only', $policies); 
+    $this->assertArrayHasKey('Public-Key-Pins', $policies); 
   
     $config['hpkp']['report-uri'] = 'https://report-uri.io/reportOnly';
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
 
-    $this->assertArrayHasKey('Public-Key-Pins-Report-Only', $headers);
+    $this->assertArrayHasKey('Public-Key-Pins-Report-Only', $policies);
       
     unset($config);
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::csp
+   */
   public function testCsp(): void 
   {
-    $headers = $this->getBuilder()->headers();
+    $policies = $this->getBuilder()->policies();
 
-    $this->assertArrayHasKey('Content-Security-Policy', $headers);
-    $this->assertTrue(is_string($headers['Content-Security-Policy']));
+    $this->assertArrayHasKey('Content-Security-Policy', $policies);
+    $this->assertTrue(is_string($policies['Content-Security-Policy']));
 
-    unset($headers);
+    unset($policies);
   }
 
+  /**
+   * @covers SecurityHeadersBuilder::csp
+   */
   public function testCspWithStrcsp(): void
   {
     $config = $this->getConfig();
     $config['str-csp'] = "script-src 'self' 'nonce-SomeRandomNonce'";
 
-    $headers = $this->getBuilder($config)->headers();
+    $policies = $this->getBuilder($config)->policies();
 
-    $this->assertTrue($headers['Content-Security-Policy'] === $config['str-csp']);
+    $this->assertTrue($policies['Content-Security-Policy'] === $config['str-csp']);
 
     unset($config);
-    unset($headers);
+    unset($policies);
+  }
+
+  /**
+   * 
+   */
+  public function testCspStoresNonce(): void
+  {
+    $policies = $this->getBuilder()->policies();
+    
+    $container = Container::getInstance();
+
+    $this->assertArrayHasKey('shnonce.script', $container);
+    // $this->assertTrue(is_string($policies['Content-Security-Policy']));
+
+    unset($policies);
   }
 }

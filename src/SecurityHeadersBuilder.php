@@ -22,6 +22,11 @@ class SecurityHeadersBuilder {
     protected $config = [];
 
     /**
+     * @var Illuminate\Container\Container
+     */
+    protected $container;
+
+    /**
      * @var array
      */
     protected $policies = [];
@@ -30,26 +35,28 @@ class SecurityHeadersBuilder {
      * Instanciate the builder
      * 
      * @param array $config Configuration data for building security headers
+     * @param Illuminate\Container\Container $app
      */
-    public function __construct(array $config) 
+    public function __construct(array $config, $app) 
     {
         $this->config = $config;
+        $this->container = $app;
 
     }
 
     /**
-     * Merges headers then stores it in the protected $policies property.
-     * Retuns headers
+     * Merges header policies then stores it in the protected $policies property.
+     * Retuns policies
      *
      * @return array
      */
-    public function headers(): array
+    public function policies(): array
     {
         if (!empty($this->policies)) {
             return $this->policies;
         }
 
-        $headers = array_merge(
+        $policies = array_merge(
             $this->hsts(),
             $this->csp(),
             $this->ect(),
@@ -57,9 +64,9 @@ class SecurityHeadersBuilder {
             $this->getCompiledPolicies()
         );
 
-        $this->policies = $headers;
+        $this->policies = $policies;
 
-        return $headers;
+        return $policies;
     }
 
     /**
@@ -144,9 +151,12 @@ class SecurityHeadersBuilder {
 
         $csp = CSPBuilder::fromArray($this->config['csp']);
 
-        // $csp->nonce('script-src');
-        // $csp->nonce('style-src');
+        $nonce = $csp->nonce('script-src');
+        $this->container->instance('headers.csp.scrit-src.nonce', $nonce);
 
+        // $nonce = $csp->nonce('style-src');
+        // $this->container->instance('shnonce.style', $nonce);        
+        
         return $csp->getHeaderArray();
     }
 
