@@ -35,13 +35,10 @@ class SecurityHeadersBuilder {
      * Instanciate the builder
      * 
      * @param array $config Configuration data for building security headers
-     * @param Illuminate\Container\Container $app
      */
-    public function __construct(array $config, $app) 
+    public function __construct(array $config) 
     {
         $this->config = $config;
-        $this->container = $app;
-
     }
 
     /**

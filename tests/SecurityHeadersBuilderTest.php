@@ -3,8 +3,6 @@
 use PHPUnit\Framework\TestCase;
 // use Orchestra\Testbench\TestCase as Orchestra;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersBuilder;
-use Illuminate\Container\Container;
-
 
 final class SecurityHeadersBuilderTest extends TestCase {
 
@@ -35,7 +33,7 @@ final class SecurityHeadersBuilderTest extends TestCase {
       $config = $this->getConfig();
     }
 
-    $sh = new SecurityHeadersBuilder($config, Container::getInstance());
+    $sh = new SecurityHeadersBuilder($config);
 
     return $sh;
   }
@@ -70,7 +68,7 @@ final class SecurityHeadersBuilderTest extends TestCase {
   {
     $config = $this->getConfig();
 
-    $sh = new SecurityHeadersBuilder($config, Container::getInstance());
+    $sh = new SecurityHeadersBuilder($config);
 
     $policies = $sh->policies();
     $nonces = $sh->getNonces();
