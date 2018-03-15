@@ -175,7 +175,10 @@ class SecurityHeadersBuilder {
 
         // $nonce = $csp->nonce('style-src');
 
-        $this->nonces['script'] = $scriptNonces;
+        $this->nonces = array_merge(
+            $this->nonces,
+            ['script' => $scriptNonces]
+        );
         
         return $csp->getHeaderArray();
     }
