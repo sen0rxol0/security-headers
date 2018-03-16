@@ -40,7 +40,7 @@ class SecurityHeadersMiddleware
             foreach ($nonces as $key => $nonce) {
                 switch ($key) {
                     case 'script':
-                        Cache::store('file')->put('script_nonces', json_encode($nonce));           
+                        $request->session()->put('script_nonces',$nonce);           
                         break;
                 }
             }
