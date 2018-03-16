@@ -1,11 +1,14 @@
 <?php
+
+use Illuminate\Support\Facades\Cache;
+
 function nonce(string $directive = '')
 {
     if ($directive === 'script-src') {
-        return app()->offsetGet('scriptnonce');
+        return Cache::get('script_nonces', '');
     }
 
     if ($directive === 'style-src') {
-        return app()->make('shnonce.style');
+        return Cache::get('style_nonces', '');
     }
 }

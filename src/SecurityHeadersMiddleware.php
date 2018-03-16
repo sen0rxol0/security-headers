@@ -4,6 +4,7 @@ namespace Sen0rxol0\SecurityHeaders;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersBuilder;
 
 /**
@@ -35,15 +36,15 @@ class SecurityHeadersMiddleware
             $response->headers->set($key, $policy, true);
         }
 
-        // if (!empty($nonces)) {
-        //     foreach ($nonces as $key => $nonce) {
-        //         switch ($key) {
-        //             case 'script':
-        //                 \Config::set('script_nonce', $value);                 
-        //                 break;
-        //         }
-        //     }
-        // }
+        if (!empty($nonces)) {
+            foreach ($nonces as $key => $nonce) {
+                switch ($key) {
+                    case 'script':
+                        Cache::store('file')->put('script_nonces', json_encode($nonce));           
+                        break;
+                }
+            }
+        }
 
         return $response;
     }

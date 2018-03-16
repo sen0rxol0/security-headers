@@ -100,13 +100,15 @@ return [
         'report-only' => false,
         'report-uri' => null, // csp violation reporting endpoint
         'upgrade-insecure-requests' => false,
-        'base-uri' => [],
-        'default-src' => [],
+        'base-uri' => [], // 'none'
+        'default-src' => [
+            'self' => true
+        ], //'none'
         'child-src' => [
             'allow' => [
                 // 'https://www.youtube.com'
             ],
-            'self' => false
+            'self' => true
         ],
         'script-src' => [
             'add-nonces' => true,
@@ -119,7 +121,7 @@ return [
             'nonces' => [],
             'self' => true,
             'unsafe-inline' => false,
-            'unsafe-eval' => false
+            'unsafe-eval' => true
         ],
         'style-src' => [
             'self' => true
