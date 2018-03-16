@@ -2,7 +2,7 @@
 
 This package aims to improve HTTP response headers security, built for integration with [Laravel](https://laravel.com).
 
-It wont be a extend guide on headers security, for more info check out [resources](#resources) or start by testing your application headers on [securityheaders.io](https://securityheaders.io/) and came back when you probably :scream:
+It wont be a extend guide on headers security, for more info check out [resources](#resources) or start by testing your application headers on [securityheaders.io](https://securityheaders.io/) and come back when you probably :scream:
 
 ## Integration
 
