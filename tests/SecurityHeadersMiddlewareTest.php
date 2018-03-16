@@ -6,7 +6,6 @@ use Sen0rxol0\SecurityHeaders\SecurityHeadersServiceProvider;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Support\Facades\Cache;
 
 final class SecurityHeadersMiddlewareTest extends Orchestra
 {
@@ -56,8 +55,6 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
 
         $headers = $res->headers;
         $this->assertContains("default-src 'self';", $headers->get('Content-Security-Policy'));
-
-        // $this->
     }
 
     public function testCanStoreNonce()
@@ -65,10 +62,10 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
         $response = $this->get('/');
         $response->assertStatus(200);
 
-        $nonces = Cache::get('script_nonces', '');
-        // $this->assertEquals(strlen($nonces), 32);
-        // $this->assertTrue(is_string($nonces));
-        $this->assertTrue(is_array(json_decode($nonces)));
+        $nonces = json_decode(session('script_nonces'));
+        $this->assertTrue(is_array($nonces));
+        $this->assertTrue(is_string($nonces[0]));
+        // $this->assertEquals(strlen($nonces[0]), 32);
     }
 
 }

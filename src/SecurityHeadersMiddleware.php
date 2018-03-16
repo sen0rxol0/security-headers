@@ -4,7 +4,6 @@ namespace Sen0rxol0\SecurityHeaders;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersBuilder;
 
 /**
@@ -40,7 +39,7 @@ class SecurityHeadersMiddleware
             foreach ($nonces as $key => $nonce) {
                 switch ($key) {
                     case 'script':
-                        $request->session()->put('script_nonces',$nonce);           
+                        session(['script_nonces' => json_encode($nonce)]);        
                         break;
                 }
             }
