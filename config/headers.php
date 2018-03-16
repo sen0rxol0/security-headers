@@ -13,7 +13,7 @@ return [
      * Reference: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#xfo
      * Posible values: 'deny', 'sameorigin', 'allow-from <domain>'
      */
-    'x-frame-options' => 'deny',
+    'x-frame-options' => 'sameorigin',
 
     /**
      * X-Permitted-Cross-Domain-Policies
@@ -90,6 +90,7 @@ return [
     /**
      * Content Security Policy
      * References: https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#csp
+     * https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet
      * 
      * str-csp lets you define a one line string policy. Disabled if empty string otherwise csp is ignored.
      * Example: "script-src 'self' 'nonce-SomeRandomNonce'"
@@ -103,7 +104,7 @@ return [
         'base-uri' => [], // 'none'
         'default-src' => [
             'self' => true
-        ], //'none'
+        ],
         'child-src' => [
             'allow' => [
                 // 'https://www.youtube.com'
@@ -131,7 +132,9 @@ return [
             'self' => true,
             'data' => true
         ],
-        'connect-src' => [],
+        'connect-src' => [
+            'self' => true
+        ],
         'font-src' => [
             'self' => true
         ],

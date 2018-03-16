@@ -9,7 +9,10 @@ function nonce(string $directive = ''): string
 
         $nonces = json_decode(session()->get($key));
         $nonce = $nonces[0];
-        $nonces = array_slice($nonces, 0, 1);
+
+        if (count($nonces) !== 1) {
+            $nonces = array_slice($nonces, 0, 1);
+        }
         
         if (empty($nonces)) {
             session()->forget($key);
