@@ -55,6 +55,9 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
 
         $headers = $res->headers;
         $this->assertContains("default-src 'self';", $headers->get('Content-Security-Policy'));
+
+        unset($res);
+        unset($headers);
     }
 
     public function testCanStoreNonce()
@@ -66,6 +69,9 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
         $this->assertTrue(is_array($nonces));
         $this->assertTrue(is_string($nonces[0]));
         // $this->assertEquals(strlen($nonces[0]), 32);
+
+        unset($res);
+        unset($nonces);
     }
 
 
@@ -74,10 +80,12 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
         $res = $this->get('/');
         $res->assertSuccessful();
 
-        $nonces = nonce('script_src');
+        $nonce = nonce('script-src');
 
-        $this->assertTrue(is_array($nonces));
-        $this->assertTrue(is_string($nonces[0]));
+        $this->assertTrue(is_string($nonce));
+        $this->assertTrue(!empty($nonce));
+
+        unset($nonce);       
         // $this->assertEquals(strlen($nonces[0]), 32);
     }
 }

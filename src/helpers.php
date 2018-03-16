@@ -3,21 +3,21 @@
 function nonce(string $directive = ''): string
 {
     function getNonceFromSession(string $key): string {
-        if (!request()->session()->exists($key)) {
+        if (!session()->exists($key)) {
             return ''; // @todo throw exception
         }
 
-        $nonces = json_decode(request()->session()->get($key));
+        $nonces = json_decode(session()->get($key));
         $nonce = $nonces[0];
-        $nonces = array_splice($nonces, 0, 1);
-
+        $nonces = array_slice($nonces, 0, 1);
+        
         if (empty($nonces)) {
-            request()->session()->forget($key);
+            session()->forget($key);
         } else {
             session([$key => json_encode($nonces)]);
         }
 
-        return $nonce;
+        return $nonce ?? "";
     }
 
     if ($directive === 'script-src') {
