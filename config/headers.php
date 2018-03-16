@@ -93,7 +93,7 @@ return [
      * https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet
      * 
      * str-csp lets you define a one line string policy. Disabled if empty string otherwise csp is ignored.
-     * Example: "script-src 'self' 'nonce-SomeRandomNonce'"
+     * Example: "default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'"
      */
     'str-csp' => '',
 
@@ -128,8 +128,8 @@ return [
             'self' => true
         ],
         'img-src' => [
-            'blob' => true,
             'self' => true,
+            'blob' => true,
             'data' => true
         ],
         'connect-src' => [
