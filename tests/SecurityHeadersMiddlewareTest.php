@@ -59,8 +59,8 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
 
     public function testCanStoreNonce()
     {
-        $response = $this->get('/');
-        $response->assertStatus(200);
+        $res = $this->get('/');
+        $res->assertSuccessful();
 
         $nonces = json_decode(session('script_nonces'));
         $this->assertTrue(is_array($nonces));
@@ -68,4 +68,16 @@ final class SecurityHeadersMiddlewareTest extends Orchestra
         // $this->assertEquals(strlen($nonces[0]), 32);
     }
 
+
+    public function testCanRetreiveNonce()
+    {
+        $res = $this->get('/');
+        $res->assertSuccessful();
+
+        $nonces = nonce('script_src');
+
+        $this->assertTrue(is_array($nonces));
+        $this->assertTrue(is_string($nonces[0]));
+        // $this->assertEquals(strlen($nonces[0]), 32);
+    }
 }
