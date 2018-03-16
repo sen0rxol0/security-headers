@@ -6,8 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Sen0rxol0\SecurityHeaders\SecurityHeadersBuilder;
 
-
-
 /**
 *  Class SecurityHeadersMiddleware
 *

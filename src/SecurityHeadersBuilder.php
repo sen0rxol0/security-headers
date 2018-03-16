@@ -3,8 +3,6 @@
 namespace Sen0rxol0\SecurityHeaders;
 
 use ParagonIE\CSPBuilder\CSPBuilder;
-use ParagonIE\HPKPBuilder\HPKPBuilder;
-
 
 /**
 *  Class SecurityHeadersBuilder

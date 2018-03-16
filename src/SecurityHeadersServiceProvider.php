@@ -4,7 +4,6 @@ namespace Sen0rxol0\SecurityHeaders;
 
 use Illuminate\Support\ServiceProvider;
 
-
 /**
 *  Class SecurityHeadersServiceProvider
 *
